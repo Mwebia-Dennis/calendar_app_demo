@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">calendar_demo</string>
+    <string name="day">Day</string>
+    <string name="_3_days">3 days</string>
+    <string name="week">Week</string>
+    <string name="today">Today</string>
+</resources>
