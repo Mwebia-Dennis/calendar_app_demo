@@ -11,6 +11,7 @@ import android.text.format.DateUtils;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import com.alamkanak.weekview.MonthLoader;
 import com.alamkanak.weekview.WeekView;
@@ -60,19 +61,20 @@ public class MainActivity extends AppCompatActivity {
 
     private void initialise() {
 
-        List<WeekViewEvent> events = getEvents();
         WeekView.EventClickListener mEventClickListener = (event, eventRect) -> {
 
             Log.d("event click", "true");
+            Toast.makeText(MainActivity.this, "event clicked", Toast.LENGTH_SHORT).show();
         };
-//        WeekView.EventLongPressListener mEventLongPressListener = (event, eventRect) -> {
-//
-//            Log.d("event long click", "true");
-//        };
+        WeekView.EventLongPressListener mEventLongPressListener = (event, eventRect) -> {
+
+            Log.d("event long click", "true");
+            Toast.makeText(MainActivity.this, "event long clicked", Toast.LENGTH_SHORT).show();
+        };
 
         MonthLoader.MonthChangeListener mMonthChangeListener = (newYear, newMonth) -> {
             // Populate the week view with some events.
-            return events;
+            return getEvents(newYear, newMonth);
         };
         // Get a reference for the week view in the layout.
         mWeekView = findViewById(R.id.weekView);
@@ -85,25 +87,49 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-    private List<WeekViewEvent> getEvents() {
+    private List<WeekViewEvent> getEvents(int newYear, int newMonth) {
 
         HashSet<WeekViewEvent> events = new HashSet<>();
         events.clear();
 
-        DateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
-        Date date = null;
-        try {
-            date = formatter.parse(new Date().toString());
-            Calendar startTime = Calendar.getInstance();
-            startTime.setTime(date);
+        Calendar startTime = Calendar.getInstance();
+        Calendar endTime = (Calendar) startTime.clone();
+        startTime.set(Calendar.HOUR_OF_DAY, 3);
+        startTime.set(Calendar.MINUTE, 30);
+        startTime.set(Calendar.MONTH, newMonth-1);
+        startTime.set(Calendar.YEAR, newYear);
+        endTime.set(Calendar.HOUR_OF_DAY, 4);
+        endTime.set(Calendar.MINUTE, 30);
+        endTime.set(Calendar.MONTH, newMonth-1);
+        WeekViewEvent event = new WeekViewEvent(1, "birthday", startTime, endTime);
+        event.setColor(getResources().getColor(R.color.teal_200));
+        events.add(event);
 
-            date = formatter.parse(String.valueOf(new Date(Calendar.getInstance().getTimeInMillis() + (10 * 60 * 1000))));
-            Calendar endTime = Calendar.getInstance();
-            endTime.setTime(date);
-            events.add(new WeekViewEvent(1, "birthday", "Home", startTime, endTime));
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
+        Calendar startTime1 = Calendar.getInstance();
+        Calendar endTime1 = (Calendar) startTime.clone();
+        startTime1.set(Calendar.HOUR_OF_DAY, 10);
+        startTime1.set(Calendar.MINUTE, 30);
+        startTime1.set(Calendar.MONTH, newMonth-1);
+        startTime1.set(Calendar.YEAR, newYear);
+        endTime1.set(Calendar.HOUR_OF_DAY, 11);
+        endTime1.set(Calendar.MINUTE, 0);
+        endTime1.set(Calendar.MONTH, newMonth-1);
+        WeekViewEvent event1 = new WeekViewEvent(2, "new event", startTime1, endTime1);
+        event1.setColor(getResources().getColor(R.color.pink));
+        events.add(event1);
+
+        Calendar startTime2 = Calendar.getInstance();
+        Calendar endTime2 = (Calendar) startTime.clone();
+        startTime2.set(Calendar.HOUR_OF_DAY, 16);
+        startTime2.set(Calendar.MINUTE, 10);
+        startTime2.set(Calendar.MONTH, newMonth-1);
+        startTime2.set(Calendar.YEAR, newYear);
+        endTime2.set(Calendar.HOUR_OF_DAY, 16);
+        endTime2.set(Calendar.MINUTE, 59);
+        endTime2.set(Calendar.MONTH, newMonth-1);
+        WeekViewEvent event2 = new WeekViewEvent(3, "event2", startTime2, endTime2);
+        event2.setColor(getResources().getColor(R.color.blue));
+        events.add(event2);
 //        events.add(new WeekViewEvent(1, "birthday", 2021, 11,7, 11, 0,
 //                2021, 11, 7, 12, 30 ));
 //        events.add(new WeekViewEvent(2, "new event", 2021, 11,7, 13, 0,
