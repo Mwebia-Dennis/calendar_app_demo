@@ -16,6 +16,7 @@ import android.widget.Toast;
 import com.alamkanak.weekview.MonthLoader;
 import com.alamkanak.weekview.WeekView;
 import com.alamkanak.weekview.WeekViewEvent;
+import com.alamkanak.weekview.WeekViewLoader;
 import com.applandeo.materialcalendarview.CalendarUtils;
 import com.applandeo.materialcalendarview.CalendarView;
 import com.applandeo.materialcalendarview.EventDay;
@@ -73,22 +74,34 @@ public class MainActivity extends AppCompatActivity {
         };
 
         MonthLoader.MonthChangeListener mMonthChangeListener = (newYear, newMonth) -> {
-            // Populate the week view with some events.
+            // Populate data when month changes.
+            // The week view has infinite scrolling horizontally. We have to provide the events of a
+            // month every time the month changes on the week view.
             return getEvents(newYear, newMonth);
         };
+
         // Get a reference for the week view in the layout.
         mWeekView = findViewById(R.id.weekView);
         mWeekView.setMonthChangeListener(mMonthChangeListener);
         mWeekView.setOnEventClickListener(mEventClickListener);
-        // The week view has infinite scrolling horizontally. We have to provide the events of a
-        // month every time the month changes on the week view.
-//        mWeekView.setEventLongPressListener(mEventLongPressListener);
+        mWeekView.setEventLongPressListener(mEventLongPressListener);
     }
 
 
-
+    /**
+     *
+     * @param newYear: current year after year changes on calendar
+     * @param newMonth: the new month, every time the new month changes on the calendar
+     * @return list of events of the new month
+     *
+     * points to note
+     *
+     * every event should have a unique id
+     */
     private List<WeekViewEvent> getEvents(int newYear, int newMonth) {
 
+        //create events and add to calendar based on the new month and new year.
+        //this demo data will be duplicated every new month
         HashSet<WeekViewEvent> events = new HashSet<>();
         events.clear();
 
@@ -130,6 +143,32 @@ public class MainActivity extends AppCompatActivity {
         WeekViewEvent event2 = new WeekViewEvent(3, "event2", startTime2, endTime2);
         event2.setColor(getResources().getColor(R.color.blue));
         events.add(event2);
+
+        Calendar startTime3 = Calendar.getInstance();
+        Calendar endTime3 = (Calendar) startTime.clone();
+        startTime3.set(Calendar.HOUR_OF_DAY, 16);
+        startTime3.set(Calendar.MINUTE, 10);
+        startTime3.set(Calendar.MONTH, newMonth-1);
+        startTime3.set(Calendar.YEAR, newYear);
+        endTime3.set(Calendar.HOUR_OF_DAY, 16);
+        endTime3.set(Calendar.MINUTE, 59);
+        endTime3.set(Calendar.MONTH, newMonth-1);
+        WeekViewEvent event3 = new WeekViewEvent(4, "event3", startTime3, endTime3);
+        event3.setColor(getResources().getColor(R.color.green));
+        events.add(event3);
+
+        Calendar startTime4 = Calendar.getInstance();
+        Calendar endTime4 = (Calendar) startTime.clone();
+        startTime4.set(Calendar.HOUR_OF_DAY, 16);
+        startTime4.set(Calendar.MINUTE, 40);
+        startTime4.set(Calendar.MONTH, newMonth-1);
+        startTime4.set(Calendar.YEAR, newYear);
+        endTime4.set(Calendar.HOUR_OF_DAY, 17);
+        endTime4.set(Calendar.MINUTE, 30);
+        endTime4.set(Calendar.MONTH, newMonth-1);
+        WeekViewEvent event4 = new WeekViewEvent(5, "event4", startTime4, endTime4);
+        event4.setColor(getResources().getColor(R.color.teal_700));
+        events.add(event4);
 //        events.add(new WeekViewEvent(1, "birthday", 2021, 11,7, 11, 0,
 //                2021, 11, 7, 12, 30 ));
 //        events.add(new WeekViewEvent(2, "new event", 2021, 11,7, 13, 0,
